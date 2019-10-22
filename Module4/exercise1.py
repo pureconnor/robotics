@@ -8,7 +8,7 @@ import IPython
 from PIL import Image
 from sklearn.cluster import KMeans
 
-# Use 'jpeg' instead of 'png' (~5 times faster)
+# Use 'jpeg' instead of 'png' (~5 times faster) 
 def showarray(a, fmt='jpeg'):
     '''
     Function to display an image within a Jupyter notebook.
