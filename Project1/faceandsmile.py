@@ -35,8 +35,16 @@ if __name__ == "__main__":
             for(sx,sy,sw,sh) in smiles:
                 smile = cv.rectangle(roi_color,(sx,sy),((sx+sw),(sy+sh)),(255,0,0),2)
                 if smile is not None and captured is False:
+                    print("\n [PROMPT] Would you like to save this photo? (y/n):")
                     cv.imshow('Capture', img_copy)
-                    captured = True
+                    choice=cv.waitKey(0) & 0xff
+                    if choice==121:
+                        captured = True
+                        print("\n [INFO] Photo saved to current working directory")
+                        break
+                    if choice==110:
+                        print("\n [INFO] Photo released.")
+                        break 
 
         cv.imshow('camera', img)
         k = cv.waitKey(10) & 0xff
