@@ -18,10 +18,12 @@ if __name__ == "__main__":
     #Define min window size to be recognized as a face
     minW = 0.1*cam.get(3)
     minH = 0.1*cam.get(4)
+    captured = False
 
     while True:
         ret, img = cam.read()
         img = cv.flip(img, -1) #vertical flip
+        img_copy = img
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
         faces = face_cascade.detectMultiScale(gray, 1.3, 5)
@@ -31,8 +33,10 @@ if __name__ == "__main__":
             roi_color = img[y:y + h, x:x + w]
             smiles = smile_cascade.detectMultiScale(roi_gray, 1.8, 20)
             for(sx,sy,sw,sh) in smiles:
-                cv.rectangle(roi_color,(sx,sy),((sx+sw),(sy+sh)),(255,0,0),2)
-
+                smile = cv.rectangle(roi_color,(sx,sy),((sx+sw),(sy+sh)),(255,0,0),2)
+                if smile is not None and captured is False:
+                    cv.imshow('Capture', img_copy)
+                    captured = True
 
         cv.imshow('camera', img)
         k = cv.waitKey(10) & 0xff
