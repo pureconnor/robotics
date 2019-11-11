@@ -1,10 +1,5 @@
-import picamera
-import numpy as np
 import cv2 as cv
-import IPython
-import io
-import time
-from PIL import Image
+import copy
 
 if __name__ == "__main__":
 
@@ -23,7 +18,7 @@ if __name__ == "__main__":
     while True:
         ret, img = cam.read()
         img = cv.flip(img, -1) #vertical flip
-        img_copy = img
+        img_copy = copy.deepcopy(img)
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
         faces = face_cascade.detectMultiScale(gray, 1.3, 5)
@@ -35,16 +30,17 @@ if __name__ == "__main__":
             for(sx,sy,sw,sh) in smiles:
                 smile = cv.rectangle(roi_color,(sx,sy),((sx+sw),(sy+sh)),(255,0,0),2)
                 if smile is not None and captured is False:
-                    print("\n [PROMPT] Would you like to save this photo? (y/n):")
-                    cv.imshow('Capture', img_copy)
+                    cv.destroyWindow('camera')
+                    cv.imshow('Capture | y: save, n:release', img_copy)
                     choice=cv.waitKey(0) & 0xff
                     if choice==121:
-                        captured = True
                         print("\n [INFO] Photo saved to current working directory")
                         break
                     if choice==110:
                         print("\n [INFO] Photo released.")
-                        break 
+                        break
+                break 
+            cv.destroyWindow('Capture | y: save, n:release')
 
         cv.imshow('camera', img)
         k = cv.waitKey(10) & 0xff
