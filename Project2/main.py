@@ -3,14 +3,15 @@ import os
 import subprocess
 import FaceDetector
 import SMSServer
+import creds
 import threading
 import time
 from twilio.rest import Client
 
-account_sid = 'ACc719adaaa0af09c174ab842b8c1fa55a'
-auth_token = '4c54aa6cf9bb6f6b9ff9e8f044c782c5'
+account_sid = creds.account_sid
+auth_token = creds.auth_token
 client = Client(account_sid, auth_token)
-phoneNumbers = {'Connor': '+16783278571'}
+phoneNumbers = creds.phoneNumbers
 
 def startSMSSever():
     print('='*50, '\nSetting up SMS Server. Please wait....\n')
