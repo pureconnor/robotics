@@ -1,6 +1,7 @@
 import sys
 import os
-import subprocess
+import json
+import subprocess, signal
 import FaceDetector
 import SMSServer
 import creds
@@ -15,37 +16,41 @@ phoneNumbers = creds.phoneNumbers
 
 def startSMSSever():
     print('='*50, '\nSetting up SMS Server. Please wait....\n')
-    cmd = 'python3.5 SMSServer.py'
-    os.system(cmd)
+    os.system('python3 SMSServer.py')
     
 def exposeServer():
-    os.system('cd /tmp && ./ngrok http 5000 >/dev/null 2>&1')
-    # subprocess.call(['cd', '/tmp', '&&', './ngrok', 'http', '5000'], stdout=subprocess.PIPE)
-
-
+    print('='*50, '\nExposing SMS Server via burrow.io. Please wait....\n')
+    os.system('curl -Ls https://burrow.io/BNNfnYYM-P44mHceY | bash -s >/dev/null')
+    
 def sendMessage(identity):
     message = client.messages.\
                 create(
-                    body= 'Hi, {}!\nWhat would you like me to bring you?\nCoke\nCandy\nPhone Charger'.format(identity),
+                    body= 'Hi, {}!\
+                        \nWhat would you like me do?\
+                        \nIntelligent avoidance\
+                        \nFind you a coke\
+                        \nDo a spin'.format(identity),
                     from_= '+12568297127',
                     to= str(phoneNumbers[identity])
                 )
     print('Message Sent! Send ID: ', message.sid)
 
 if __name__ == "__main__":
+    os.system('sudo modprobe bcm2835-v4l2 >/dev/null 2>&1')
 
     t1 = threading.Thread(target=startSMSSever)
     t2 = threading.Thread(target=exposeServer)
-    
+
     t1.start()
     time.sleep(5)
     t2.start()
-
+    time.sleep(5)
+    
     
     print('='*50, '\nDetecting face. Hold still....')
     identity = FaceDetector.getFace()
 
-    if identity != 'Unknown':
+    if identity != 'Unknown' and identity != 0:
         print('\nPerson detected!\nHi', identity, '!')
         if identity in phoneNumbers:
             sendMessage(identity)
